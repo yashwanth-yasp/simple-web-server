@@ -1,0 +1,42 @@
+name: CI/CD pipeline 
+
+on:
+  push:
+    braches:
+      - main #runs when code is pushed to main 
+
+jobs: 
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout code 
+        uses: actions/checkout@v3
+      - name: Log in to Docker Hub
+        run: echo "${{secrets.DOCKER_PASSWORD}}" | docker login -u "${{secrets.DOCKER_USERNAME}}" --password-stdin
+      - name: Build the Docker image 
+        run: docker build -t ${{secrets.DOCKER_USERNAME}}/simple-web-server:latest
+      - name: Push the Docker image
+        run: docker push ${{secrets.DOCKER_USERNAME}}/simple-web-server:latest
+  
+  
+  deploy: 
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      # commenting the deploy part as I don't have a server to deploy to 
+      # - name: SSH into server and deploy
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{secrets.SERVER_IP}}
+      #     username: ${{secrets.SERVER_USER}}
+      #     password: ${{secrets.SERVER_PASSWORD}}
+      #     script: | 
+      #       docker pull $${{secrets.DOCKER_USERNAME}}/simple-web-server:latest
+      #       docker stop webserver || true
+      #       docker rm webserver || true 
+      #       docker run -d -p 8080:80 --name webserver $${{secrets.DOCKER_USERNAME}}/simple-web-server:latest
+      - name: Pull and Run Docker Container 
+        run: | 
+          docker pull ${{server.DOCKER_USERNAME}}/simple-web-server:latest
+          docker run -d -p 8080:80 ${{server.DOCKER_USERNAME}}/simple-web-server:latest
+          
