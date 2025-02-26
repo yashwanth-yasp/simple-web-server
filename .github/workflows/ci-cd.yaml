@@ -37,6 +37,6 @@ jobs:
       #       docker run -d -p 8080:80 --name webserver $${{secrets.DOCKER_USERNAME}}/simple-web-server:latest
       - name: Pull and Run Docker Container 
         run: | 
-          docker pull ${{server.DOCKER_USERNAME}}/simple-web-server:latest
-          docker run -d -p 8080:80 ${{server.DOCKER_USERNAME}}/simple-web-server:latest
-          
+          docker pull ${{secrets.DOCKER_USERNAME}}/simple-web-server:latest
+          docker run -d -p 8080:80 ${{secrets.DOCKER_USERNAME}}/simple-web-server:latest
+
